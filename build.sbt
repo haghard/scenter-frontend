@@ -29,6 +29,7 @@ TwirlKeys.templateFormats += ("stream" -> "ui.HtmlStreamFormat")
 // Add some useful default imports for streaming templates
 TwirlKeys.templateImports ++= Vector("_root_.ui.HtmlStream", "_root_.ui.HtmlStream._", "_root_.ui.StaticContent")
 
+lazy val h2Version = "1.4.191"
 
 libraryDependencies ++= Seq(
   jdbc,
@@ -67,17 +68,13 @@ routesGenerator := InjectedRoutesGenerator
 
 dockerBaseImage := "frolvlad/alpine-oraclejdk8:latest"
 maintainer := "haghard"
-dockerExposedPorts in Docker := Seq(8080)
+dockerExposedPorts in Docker := Seq(8081)
 dockerBaseImage := "frolvlad/alpine-oraclejdk8:latest"
 
 dockerCommands := dockerCommands.value.flatMap {
   case cmd@Cmd("FROM", _) => (cmd :: Cmd("RUN", "apk update && apk add bash && ls -la") :: Nil)
   case otherCmd =>  List(otherCmd)
 }
-
-//scalikejdbcSettings
-
-lazy val h2Version = "1.4.191"
 
 //java -cp h2-1.4.191.jar org.h2.tools.Server
 
