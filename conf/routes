@@ -19,10 +19,6 @@ GET    /logout                    controllers.SportCenter.logout
 GET    /scenter                   controllers.Aggregator.index(stage: String)
 
 
-#GET    /stats                     controllers.TaxiController.statStream(query:String)
-#GET    /taxi                      controllers.TaxiController.index(year: Int, month: Int, direction: String)
-#GET    /taxi/bar                  controllers.TaxiController.bar(year: Int, month: Int, direction: String)
-
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file              controllers.Assets.at(path="/public", file)
 GET     /webjars/*file             controllers.WebJarAssets.at(file)
