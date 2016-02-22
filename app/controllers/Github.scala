@@ -1,7 +1,6 @@
 package controllers
 
-import javax.inject.{Inject, Singleton}
-
+import javax.inject.Inject
 import akka.actor.ActorSystem
 import com.github.scribejava.core.model.Verb
 import controllers.oauth.Oauth
@@ -10,17 +9,17 @@ import play.api.mvc.{Action, Controller}
 
 import scala.concurrent.Future
 
-@Singleton class Twitter @Inject()(val ws: WSClient, val conf: play.api.Configuration,
-                                   val system: ActorSystem) extends Controller {
+class Github @Inject()(val ws: WSClient, val conf: play.api.Configuration,
+                       val system: ActorSystem) extends Controller {
 
-  val log = akka.event.slf4j.Logger("oAuth-twitter")
+  val log = akka.event.slf4j.Logger("oAuth-github")
   implicit val ex = system.dispatchers.lookup("akka.stream-dispatcher")
 
-  val oauth = Oauth[com.github.scribejava.apis.TwitterApi].fromConfig(
-    conf.getString("twitter.consumer_key").get,
-    conf.getString("twitter.consumer_secret").get)
+  val oauth = Oauth[com.github.scribejava.apis.GitHubApi].fromConfig(
+    conf.getString("github.consumer_key").get,
+    conf.getString("github.consumer_secret").get)
 
-  def callback = Action.async { implicit req =>
+  def callback() = Action.async { implicit req =>
     import spray.json._
     import scalaz._
     import Scalaz._
@@ -40,12 +39,12 @@ import scala.concurrent.Future
           service.signRequest(accessToken, oAuthRequest)
           val twitterResponse = oAuthRequest.send()
           if (twitterResponse.getCode == 200) {
-            val json = twitterResponse.getBody.parseJson.asJsObject
-            json.getFields("name").head.toString().replace("\"", "")
-          } else "unknown-auth-twitter"
+            val body = twitterResponse.getBody.parseJson.asJsObject
+            body.getFields("name").head.toString().replace("\"", "")
+          } else "unknown-auth-github"
         }.flatMap { login =>
-          //TODO: handle twitter user correctly
-          log.info(s"login with twitter user $login")
+          //TODO: handle github user correctly
+          log.info(s"login with github user $login")
           Future.successful(Redirect(routes.SportCenter.login(true)))
 
           /*AccountModel.authenticate(login, "twitter-password") }.map { res =>
