@@ -4,12 +4,12 @@
 
 GET    /                          controllers.SportCenter.login(loginError: Boolean ?= false)
 
-GET    /login-twitter             controllers.TwitterAuth.index
+GET    /login/ext:provider       controllers.AuthController.index(provider: String)
 
-GET    /twitter-callback          controllers.TwitterAuth.callback
+
+GET    /twitter-callback          controllers.Twitter.callback
 
 POST   /login                     controllers.SportCenter.authenticate
-
 
 
 GET    /logout                    controllers.SportCenter.logout
