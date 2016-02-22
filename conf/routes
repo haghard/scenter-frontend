@@ -4,19 +4,23 @@
 
 GET    /                          controllers.SportCenter.login(loginError: Boolean ?= false)
 
-GET    /login/ext:provider       controllers.AuthController.index(provider: String)
-
-
-GET    /twitter-callback          controllers.Twitter.callback
-
-GET    /github-callback           controllers.Github.callback
-
 POST   /login                     controllers.SportCenter.authenticate
+
+
+GET    /login-oauth-cache         controllers.SportCenter.authenticateOauthThroughCache
+
+GET    /login-oauth2              controllers.SportCenter.authenticateOauth(login: String, password: String)
 
 
 GET    /logout                    controllers.SportCenter.logout
 
 GET    /scenter                   controllers.Aggregator.index(stage: String)
+
+GET    /login-oauth/:provider     controllers.AuthController.index(provider: String)
+
+GET    /twitter-callback          controllers.Twitter.callback
+
+GET    /github-callback           controllers.Github.callback
 
 
 # Map static resources from the /public folder to the /assets URL path

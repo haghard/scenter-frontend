@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 import akka.actor.ActorSystem
-import com.github.scribejava.core.model.Verb
+import com.github.scribejava.core.model.{OAuthAsyncRequestCallback, Verb}
 import controllers.oauth.Oauth
 import play.api.libs.ws.WSClient
 import play.api.mvc.{Action, Controller}
@@ -32,9 +32,11 @@ class Github @Inject()(val ws: WSClient, val conf: play.api.Configuration,
     headers.fold({ _ => Future.successful(Redirect(routes.SportCenter.login(false))) }, {
       token: com.github.scribejava.core.model.Token =>
         Future {
-          val service = oauth.oAuthService.build()
+          val service = oauth.oAuthService.build(oauth.instance)
           val verifier = new com.github.scribejava.core.model.Verifier(token.getSecret)
-          val accessToken = service.getAccessToken(token, verifier)
+
+          //new OAuthAsyncRequestCallback[com.github.scribejava.core.model.Token]
+          val accessToken = service.getAccessToken(verifier)
           val oAuthRequest = new com.github.scribejava.core.model.OAuthRequest(Verb.GET, oauth.protectedUrl, service)
           service.signRequest(accessToken, oAuthRequest)
           val twitterResponse = oAuthRequest.send()

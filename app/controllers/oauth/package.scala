@@ -24,6 +24,8 @@ package object oauth {
       apiSecret = apiSecret0
       this
     }
+
+    def instance: T
   }
 
   object Oauth {
@@ -34,18 +36,21 @@ package object oauth {
     implicit def twitter = new Oauth[com.github.scribejava.apis.TwitterApi] {
       override val protectedUrl = "https://api.twitter.com/1.1/account/verify_credentials.json"
 
+      override def instance = com.github.scribejava.apis.TwitterApi.instance()
+
       override def oAuthService() =
-        new com.github.scribejava.core.builder.ServiceBuilder().provider(classOf[com.github.scribejava.apis.TwitterApi])
+        new com.github.scribejava.core.builder.ServiceBuilder()
           .apiKey(apiKey)
           .apiSecret(apiSecret)
-          .state(state)
     }
 
     implicit def github = new Oauth[com.github.scribejava.apis.GitHubApi] {
       override val protectedUrl = "https://api.github.com/user"
 
+      override def instance = com.github.scribejava.apis.GitHubApi.instance()
+
       override def oAuthService() =
-        new com.github.scribejava.core.builder.ServiceBuilder().provider(classOf[com.github.scribejava.apis.GitHubApi])
+        new com.github.scribejava.core.builder.ServiceBuilder()
           .apiKey(apiKey)
           .apiSecret(apiSecret)
           .state(state)

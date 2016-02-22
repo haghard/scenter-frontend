@@ -7,6 +7,15 @@ import scalaz.\/
 
 package object frontend {
 
+  val DefaultLogin = "haghard"
+  val DefaultPassword = "suBai3sa"
+  val DefaultToken = "empty"
+
+  val DefaultTwitterPassword = "twitter-password"
+
+  //linked with Permission.TwitterUser
+  val DefaultTwitterUser = "TwitterUser"
+
   case class TweetInfo(searchQuery: String, message: String, author: String) {
     def toJson = play.api.libs.json.Json.obj("message" -> s"$searchQuery : $message", "author" -> s"$author")
   }
@@ -40,12 +49,13 @@ package object frontend {
   case object Anonymous extends Permission
   case object Unauthorized extends Permission
 
-  case class Account(id: Int, login: String, password: String, permission: String, token: String = "")
+  case class Account(id: Long, login: String, password: String, permission: String, token: String = "")
 
   object Permission {
     def valueOf(value: String): Permission = value match {
       case "Administrator" => Administrator
       case "RegularUser"   => RegularUser
+      case "TwitterUser"   => TwitterUser
       case "Anonymous"     => Anonymous
       case v => throw new IllegalArgumentException(v)
     }

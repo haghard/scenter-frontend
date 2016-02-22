@@ -17,8 +17,8 @@ object PointsPerGameLeaders {
 }
 
 @Singleton
-class PointsPerGameLeaders @Inject()(val conf: play.api.Configuration,
-                                     val ws: WSClient, val system: ActorSystem) extends Controller
+class PointsPerGameLeaders @Inject()(val conf: play.api.Configuration, val ws: WSClient,
+                                     val system: ActorSystem) extends Controller
   with AuthElement with AuthorizationConfig with GatewaySupport {
   import PointsPerGameLeaders._
 

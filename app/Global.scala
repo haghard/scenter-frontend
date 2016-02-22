@@ -1,30 +1,28 @@
 import play.api.Application
-import play.api.libs.ws.WS
 import play.api.libs.ws.ahc.{AhcConfigBuilder, AhcWSClient}
 import play.api.mvc.Results._
 import play.api.GlobalSettings
 import play.api.mvc.RequestHeader
 import frontend._
 import slick.driver.H2Driver.api._
-import scala.concurrent.{ExecutionContext, Await, Future}
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
 
 object Global extends GlobalSettings {
-  val Sep = ","
-  val AuthHeader = "Set-Authorization"
   implicit val timeout = 5 seconds
 
+  val Sep = ","
+  val AuthHeader = "Set-Authorization"
   val logger = akka.event.slf4j.Logger("global")
-  val salt = org.mindrot.jbcrypt.BCrypt.gensalt()
 
   override def onStart(app: Application) {
-    logger.info("Application is started")
+    logger.info("*********************************Application is started******************************************")
     implicit val ec = app.actorSystem.dispatchers.lookup("akka.blocking-dispatcher")
     AccountModel.readCount.fold(createSchema(app)) { count => logger.info(s"Found registered users:$count") }
   }
 
   def createSchema(app: Application)(implicit ec: ExecutionContext) = {
-    val haghard = Account(0, "haghard", org.mindrot.jbcrypt.BCrypt.hashpw("suBai3sa", salt), "Administrator", "empty")
+    val haghard = Account(0, DefaultLogin, org.mindrot.jbcrypt.BCrypt.hashpw(DefaultPassword, AccountModel.salt), "Administrator", DefaultToken)
     val loginUrl = app.configuration.getString("url.login").get
 
     val client = new AhcWSClient(new AhcConfigBuilder().build())(app.materializer)
@@ -45,12 +43,12 @@ object Global extends GlobalSettings {
   }
 
   override def onStop(app: Application): Unit = {
-    logger.info("Application is stopped")
+    logger.info("*********************************Application is stopped******************************************")
     DB.connection.close()
   }
 
   override def onBadRequest(request: RequestHeader, error: String) = {
-    Future.successful(BadRequest("Bad Request: " + error))
+    Future.successful(BadRequest(s"Bad Request: $error"))
   }
 
   // 500 - internal server error

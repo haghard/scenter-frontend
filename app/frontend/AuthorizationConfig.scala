@@ -42,16 +42,17 @@ trait AuthorizationConfig extends AuthConfig {
       (k, v) ← intervals
       if( k contains new DateTime(System.currentTimeMillis()).withZone(frontend.EST) )
     } yield v).headOption
-    stage.fold(Future.successful(play.api.mvc.Results.Forbidden("Current stage isn't found"))) { st =>
-      Future.successful(play.api.mvc.Results.Redirect(routes.Aggregator.index(st)))
+    stage.fold(Future.successful(play.api.mvc.Results.Forbidden("Current stage isn't found"))) { stage =>
+      Future.successful(play.api.mvc.Results.Redirect(routes.Aggregator.index(stage)))
     }
   }
 
   /**
     * Where to redirect the user after logging out
     */
-  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
+  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
     Future.successful(Redirect(routes.SportCenter.login(false)))
+  }
 
   /**
     * If the user is not logged in and tries to access a protected resource then redirect them as follows:
@@ -76,6 +77,7 @@ trait AuthorizationConfig extends AuthConfig {
     (Permission.valueOf(user.permission), authority) match {
       case (Administrator, _)       => true
       case (RegularUser, _) => true
+      case (TwitterUser, _) => true
       case _                 => false
     }
   }
@@ -100,8 +102,8 @@ trait AuthorizationConfig extends AuthConfig {
       .verifying("Invalid login or password", result => result.isDefined)
   }.withGlobalError(errorMessage)
 
-  val loginUrl: String = conf.getString("url.login").get
+  def loginUrl: String = conf.getString("url.login").get
 
   //should be equal to backend Max-Age
-  val tokenMaxAge: Int = conf.getInt("http-session.max-age").get
+  def tokenMaxAge: Int = conf.getInt("http-session.max-age").get
 }
