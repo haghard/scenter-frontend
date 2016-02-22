@@ -1,0 +1,28 @@
+@*
+
+@(year: Int, month: Int, direction: String)
+
+@main("New York Taxi") {
+  <h4>Live streaming: Year:@year Month:@month Direction:@direction</h4>
+  <p>Stats</p>
+
+  <h5><span id="stats"></span></h5>
+
+  <script type="text/javascript" charset="utf-8">
+    var feed = new EventSource("@routes.TaxiController.statStream(s"$year,$month,$direction")");
+    feed.addEventListener('message', function(event) {
+        var array  = jQuery.parseJSON(event.data)[0];
+        var table = "";
+        for(var i = 0; i < array.length; i++) {
+            var element = array[i];
+            //table = table + "<tr><td>" + element.message + "</td><td>" + element.count + "</td></tr>";
+            table = table + element.message + ": " + element.count + "\n";
+            console.log(element.message);
+        }
+        //console.log(table);
+        //$('#stats').html("<tr><th>Region</th><th>Count</th></tr>" + table)
+        $('#stats').html(table.replace(/(\r\n|\n|\r)/gm, "<br>"))
+    }, false);
+  </script>
+}
+*@

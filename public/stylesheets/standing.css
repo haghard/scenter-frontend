@@ -1,0 +1,12 @@
+.standing {
+    padding: 10px 0;
+    margin: 20px auto;
+    width: 800px;
+}
+
+.tableEntry {
+    font-size: 12px;
+    float: left;
+    margin: 5px 12px 0 0;
+    font-family: Helvetica, Arial, sans-serif;
+}

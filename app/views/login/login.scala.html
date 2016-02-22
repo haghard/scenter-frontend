@@ -1,0 +1,52 @@
+@(form: Form[Option[frontend.Account]])(implicit flash: Flash)
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Login Form</title>
+    <link href="/assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/bootstrap/examples/scenter/signin.css" rel="stylesheet">
+
+    <script src="/assets/javascripts/jquery-2.1.4.min.js"></script>
+    <script src="/assets/bootstrap/dist/js/bootstrap.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="navbar-header">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="@routes.TwitterAuth.index">Twitter</a></li>
+                <li class="active"><a href="">Github</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <form class="form-signin" method="post" role="form" action="@routes.SportCenter.authenticate">
+        @form.globalError.map { error =>
+        <div class="alert alert-danger">@error.message </div> }
+
+        @flash.get("success").map { message =>
+        <div class="alert alert-danger"> @message</div> }
+
+        <h2 class="form-signin-heading">Please Login</h2>
+        <input class="form-control" type="text" name="login" placeholder="Login" id="login"  value="@form("login").value">
+        <input class="form-control" type="password" name="password"  placeholder="Password" required>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">login</button>
+    </form>
+
+    @*<div class="btn-group btn-group-justified">
+        <div class="btn-group">
+            <button id="twitterlogin" type="button" ng-click="follow('name')" class="btn btn-default">
+                <span class="glyphicon glyphicon-star"></span>
+                "sdfsdf"
+            </button>
+        </div>
+    </div>
+    *@
+</div>
+
+</body>
+</html>

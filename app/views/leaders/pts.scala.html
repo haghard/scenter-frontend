@@ -1,0 +1,39 @@
+@(elements: Seq[controllers.PointsPerGameLeaders.PtsLeadersElement])
+
+<div class="row">
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>
+          <table class="table">
+            <caption>Leaders: pts</caption>
+            <thead>
+              <tr>
+                <th><span class="tableEntry">games</span></th>
+                <th><span class="tableEntry">player</span></th>
+                <th><span class="tableEntry">team</span></th>
+                <th><span class="tableEntry">pts</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(e <- elements) {
+                <tr>
+                  <td><span class="tableEntry">@e.games</span></td>
+                  <td><span class="tableEntry">@e.player </span></td>
+                  <td><input type="image" style="width: 75px; height: 50px; no-repeat 0 0; background-position:0 -40px; border: 0pt none; margin: 0px 0px;" src="@e.pic"></td>
+                  <td><span class="tableEntry">@e.pts</span></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+</div>

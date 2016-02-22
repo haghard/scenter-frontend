@@ -1,0 +1,10 @@
+.recent {
+  padding: 10px 0;
+  margin: 10px auto;
+  width: 300px;
+}
+
+.errors {
+  font-size: 8px;
+  text-align: center;
+}

@@ -1,0 +1,26 @@
+@(elements: Seq[controllers.DailyResult])
+
+<div class="row">
+
+  <div class="Daily Results">
+    @*<caption> @elements.headOption.map(_.date).getOrElse("")</caption>*@
+
+    @for(result <- elements) {
+      <div class="col-sm-4" style="width: 410px; height: 110px;">
+        <div class="panel panel-default">
+          @*<div class="panel-heading" p align="left" > <b><font size="2">@result.date</font><b>*@
+            <h6 class="panel-title">
+              <input type="image" style="width: 70px; height: 45px; no-repeat 0 0; background-position:0 -40px; border: 0pt none; margin: 0px 0px;" src="@result.guestTeam">
+              <b><label><font size="2">@result.guestScore</font></label><b>
+              <label><font size="1">@result.guestScoreLine</font></label>
+              <label> AT </label>
+              <label><font size="1">@result.homeScoreLine</font></label>
+              <label><font size="2">@result.homeScore</font></label>
+              <input type="image" style="width: 70px; height: 45px; no-repeat 0 0; background-position:0 -40px; border: 0pt none; margin: 0px 0px;" src="@result.homeTeam">
+            </h6>
+          @*</div>*@
+        </div>
+      </div>
+    }
+  </div>
+</div>

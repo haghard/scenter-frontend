@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
+
+    <title>Theme Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../dist/css/bootstrap.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="../../dist/css/bootstrap-theme.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="theme.css" rel="stylesheet">
+    <link href="signin.css" rel="stylesheet">
+
+    <script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script>
+
+    <!--<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>-->
+
+    <script src="RxJS/rx.lite.js"></script>
+    <script src="jquery/jquery-1.10.2.min.js"></script>
+    <script src="examples/sportPlanet/http.js"></script>
+
+
+    <script src="../../docs-assets/js/holder.js"></script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+
+
+</head>
+
+<body>
+
+<script language='javascript'>
+
+    window.onload = function () {
+        if (!window.jQuery) {
+            alert('jQuery not loaded');
+        }
+    }
+
+    function getAuthUser() {
+        document.write(getCookie("auth-user"));
+    }
+
+    function getFollowedTeams() {
+        return getCookie("followed-teams").split(",");
+    }
+
+    function urldecode(str) {
+        return decodeURIComponent((str+'').replace(/\+/g, '%20'));
+    }
+
+    function getCookie(cname) {
+        var allCookies = document.cookie.split(';');
+        for (var i = 0; i < allCookies.length; i++) {
+            var current = new String(allCookies[i].trim());
+            if (current.indexOf(cname) == 0) {
+                return urldecode(current).replace(cname + "=", "");
+            }
+        }
+        return "Unknown";
+    }
+
+</script>
+
+<div class="container-fluid">
+
+    <div class="sidebar">
+        <h6>Hello
+            <script>getAuthUser();</script>
+        </h6>
+    </div>
+
+    <div class="content">
+        <div class="hero-unit">
+            <h6> Followed teams last 5 results: <div id="FollowedTeams"></div> </h6>
+        </div>
+
+        <div class="page-header">
+            <h5>Recent games</h5>
+        </div>
+
+
+        <div class="row">
+            <div id="RecentResults"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

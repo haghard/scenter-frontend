@@ -1,3 +1,11 @@
+/db
+/target
+/project/project
+/project/target
+/logs
+/.idea_modules
+/.idea
+/tests.log
 *.class
 *.log
 
