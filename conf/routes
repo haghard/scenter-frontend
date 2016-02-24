@@ -4,21 +4,24 @@
 
 GET    /                          controllers.SportCenter.login(loginError: Boolean ?= false)
 
-GET    /login-twitter             controllers.TwitterAuth.index
-
-GET    /twitter-callback          controllers.TwitterAuth.callback
-
 POST   /login                     controllers.SportCenter.authenticate
 
+
+GET    /login-oauth-cache         controllers.SportCenter.authenticateOauthThroughCache
+
+GET    /login-oauth2              controllers.SportCenter.authenticateOauth(login: String, password: String)
 
 
 GET    /logout                    controllers.SportCenter.logout
 
 GET    /scenter                   controllers.Aggregator.index(stage: String)
-#GET    /stats                     controllers.TaxiController.statStream(query:String)
 
-#GET    /taxi                      controllers.TaxiController.index(year: Int, month: Int, direction: String)
-#GET    /taxi/bar                  controllers.TaxiController.bar(year: Int, month: Int, direction: String)
+GET    /login-oauth/:provider     controllers.AuthController.index(provider: String)
+
+GET    /twitter-callback          controllers.Twitter.callback
+
+GET    /github-callback           controllers.Github.callback
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file              controllers.Assets.at(path="/public", file)

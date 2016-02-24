@@ -49,8 +49,9 @@ trait AuthorizationConfig extends AuthConfig {
   /**
     * Where to redirect the user after logging out
     */
-  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
+  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
     Future.successful(Redirect(routes.SportCenter.login(false)))
+  }
 
 
   /**
@@ -75,6 +76,7 @@ trait AuthorizationConfig extends AuthConfig {
     (Permission.valueOf(user.permission), authority) match {
       case (Administrator, _)       => true
       case (RegularUser, _) => true
+      case (TwitterUser, _) => true
       case _                 => false
     }
   }

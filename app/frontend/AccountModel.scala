@@ -8,12 +8,17 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 object AccountModel {
+  val salt = org.mindrot.jbcrypt.BCrypt.gensalt()
   val accounts: TableQuery[Accounts] = TableQuery[Accounts]
 
   private def countQuery = sql"select count(*) from ACCOUNTS".as[Long]
 
   private def accountQuery(login: String) = sql"select ID, LOGIN, PASSWORD, PERMISSION, TOKEN from ACCOUNTS where LOGIN = $login"
-    .as[(Int, String, String, String, String)]
+    .as[(Long, String, String, String, String)]
+
+
+  private def accountByIdQuery(id: Long) = sql"select ID, LOGIN, PASSWORD, PERMISSION, TOKEN from ACCOUNTS where ID = $id"
+    .as[(Long, String, String, String, String)]
 
   private def refreshTokenQuery(login: String, password: String, token: String) =
     sql"UPDATE ACCOUNTS SET TOKEN = $token WHERE LOGIN = $login AND PASSWORD = $password".asUpdate
@@ -21,8 +26,7 @@ object AccountModel {
   def readCount(implicit ex: ExecutionContext, duration: Duration) =
     Await.result(DB.connection.run(countQuery).map(_.headOption).recover { case ex: Exception => None }, duration)
 
-  def authenticate2(log: org.slf4j.Logger)(login: String, password: String)(implicit ex: ExecutionContext, duration: Duration): Option[Account] = {
-    log.info(s"try to lookup from account db: $login")
+  def authenticateSync(login: String, password: String)(implicit ex: ExecutionContext, duration: Duration): Option[Account] = {
     Await.result(authenticate(login, password), duration)
   }
 
@@ -32,6 +36,14 @@ object AccountModel {
       _.find { r => org.mindrot.jbcrypt.BCrypt.checkpw(password, r._3) }
         .map(Account.tupled(_))
     }
+  }
+
+  def insertOauthUser(login: String, password: String, permission: String)(implicit ex: ExecutionContext): Future[Long] = {
+    for {
+      count <- DB.connection.run(countQuery).map(_.head) //auto inc on db level maybe
+      result <- DB.connection.run(AccountModel.accounts += Account(count + 1,
+        login, org.mindrot.jbcrypt.BCrypt.hashpw(password, salt), permission, frontend.DefaultToken))
+    } yield (count+1)
   }
 
   def updateToken(login: String, password: String, token: String): Future[Int] =
@@ -48,7 +60,7 @@ object AccountModel {
 }
 
 class Accounts(tag: Tag) extends Table[Account](tag, "ACCOUNTS") {
-  def id = column[Int]("ID", O.PrimaryKey)
+  def id = column[Long]("ID", O.PrimaryKey)
 
   def login = column[String]("LOGIN")
 

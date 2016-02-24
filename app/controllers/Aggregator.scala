@@ -5,10 +5,9 @@ import ui.{HtmlStream, Pagelet}
 import akka.actor.ActorSystem
 import javax.inject.{Inject, Singleton}
 import jp.t2v.lab.play2.auth.AuthElement
-import frontend.{RegularUser, AuthorizationConfig}
+import frontend.{Administrator, RegularUser, AuthorizationConfig}
 
 @Singleton class Aggregator @Inject()(val conf: play.api.Configuration,
-                                      //controller: TaxiController,
                                       rebCnt: ReboundLeaders, ptsCnt: PointsPerGameLeaders, daily: DailyResults,
                                       val system: ActorSystem) extends Controller
   with AuthElement with AuthorizationConfig
@@ -16,7 +15,7 @@ import frontend.{RegularUser, AuthorizationConfig}
 
   val log: org.slf4j.Logger = akka.event.slf4j.Logger("aggregator")
 
-  def index(stage: String) = StackAction(AuthorityKey -> RegularUser) { implicit request =>
+  def index(stage: String) = StackAction(AuthorityKey -> Administrator) { implicit request =>
     val user = loggedIn(request)
     log.info(s"aggregator ${user.login} -> ${request.uri}")
 
