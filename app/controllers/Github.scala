@@ -1,6 +1,6 @@
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Singleton, Inject}
 import akka.actor.ActorSystem
 import com.github.scribejava.core.model.{OAuthAsyncRequestCallback, Verb}
 import controllers.oauth.Oauth
@@ -9,6 +9,7 @@ import play.api.mvc.{Action, Controller}
 
 import scala.concurrent.Future
 
+@Singleton
 class Github @Inject()(val ws: WSClient, val conf: play.api.Configuration,
                        val system: ActorSystem) extends Controller {
 

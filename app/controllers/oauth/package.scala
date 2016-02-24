@@ -1,9 +1,7 @@
 package controllers
 
 package object oauth {
-
   import java.util.concurrent.ThreadLocalRandom
-
   import scala.annotation.implicitNotFound
 
   trait Oauth[T <: com.github.scribejava.core.builder.api.Api] {

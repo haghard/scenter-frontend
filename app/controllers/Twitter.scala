@@ -13,7 +13,8 @@ import play.api.mvc.{Action, Controller}
 import scalaz._
 import Scalaz._
 
-@Singleton class Twitter @Inject()(val ws: WSClient, val conf: play.api.Configuration,
+@Singleton
+class Twitter @Inject()(val ws: WSClient, val conf: play.api.Configuration,
                                    cache: CacheApi, val system: ActorSystem) extends Controller {
   val log = akka.event.slf4j.Logger("oAuth-twitter")
   implicit val ex = system.dispatchers.lookup("akka.stream-dispatcher")

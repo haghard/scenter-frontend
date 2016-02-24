@@ -20,9 +20,10 @@ import scala.concurrent.Future
 case class DailyResult(arena: String, guestTeam: String, homeTeam: String, guestScore: String,
                        homeScore:String, guestScoreLine:String, homeScoreLine:String, date: String)
 
-@Singleton class DailyResults @Inject() (val conf: play.api.Configuration,
-                              val ws: WSClient, val system: ActorSystem) extends Controller with AuthElement
-  with AuthorizationConfig with GatewaySupport {
+@Singleton
+class DailyResults @Inject() (val conf: play.api.Configuration, val ws: WSClient,
+                                         val system: ActorSystem) extends Controller
+  with AuthElement with AuthorizationConfig with GatewaySupport {
 
   override val key = "url.daily-results"
 

@@ -10,7 +10,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 //http://www.tzavellas.com/techblog/2015/02/10/action-composition-in-play-framework/
-@Singleton class SportCenter @Inject()(val conf: play.api.Configuration,
+@Singleton
+class SportCenter @Inject()(val conf: play.api.Configuration,
                                        cache: CacheApi, system: ActorSystem) extends Controller
   with jp.t2v.lab.play2.auth.LoginLogout with AuthorizationConfig {
 

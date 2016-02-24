@@ -5,28 +5,31 @@ import ui.{HtmlStream, Pagelet}
 import akka.actor.ActorSystem
 import javax.inject.{Inject, Singleton}
 import jp.t2v.lab.play2.auth.AuthElement
-import frontend.{Administrator, RegularUser, AuthorizationConfig}
+import frontend.{RegularUser, AuthorizationConfig}
 
-@Singleton class Aggregator @Inject()(val conf: play.api.Configuration,
-                                      rebCnt: ReboundLeaders, ptsCnt: PointsPerGameLeaders, daily: DailyResults,
-                                      val system: ActorSystem) extends Controller
+@Singleton
+class Aggregator @Inject()(val conf: play.api.Configuration, val system: ActorSystem,
+                           rebound: ReboundLeaders, pts: PointsPerGameLeaders, daily: DailyResults) extends Controller
   with AuthElement with AuthorizationConfig
   with MaterializerSupport {
 
+  val DailyElementName = "daily"
+  val RebLeadElementName = "reb-lead"
+  val PtsLeadElementName = "pts-lead"
+
   val log: org.slf4j.Logger = akka.event.slf4j.Logger("aggregator")
 
-  def index(stage: String) = StackAction(AuthorityKey -> Administrator) { implicit request =>
+  def index(stage: String) = StackAction(AuthorityKey -> RegularUser) { implicit request =>
     val user = loggedIn(request)
-    log.info(s"aggregator ${user.login} -> ${request.uri}")
+    log.info(s"${user.id}${user.login}:${user.permission} -> ${request.uri}")
 
-    val dailyStream = Pagelet.renderStream(daily.gateway("2016-02-10", user).map(views.html.daily.results(_)), "daily")
-    val rebStream = Pagelet.renderStream(rebCnt.gateway(stage, user).map(views.html.leaders.reb(_)), "reb-lead")
-    val prsStream = Pagelet.renderStream(ptsCnt.gateway(stage, user).map(views.html.leaders.pts(_)), "pts-lead")
+    val dailyStream = Pagelet.renderStream(daily.gateway("2016-02-10", user).map(views.html.daily.results(_)), DailyElementName)
+    val rebStream = Pagelet.renderStream(rebound.gateway(stage, user).map(views.html.leaders.reb(_)), RebLeadElementName)
+    val prsStream = Pagelet.renderStream(pts.gateway(stage, user).map(views.html.leaders.pts(_)), PtsLeadElementName)
 
     val body = HtmlStream.interleave(rebStream, prsStream, dailyStream)
 
     //TODO: use akka Source instead Enumerator
-
     import ui.HtmlStreamImplicits._
     Ok.chunked(views.stream.aggregatorBody(body))
 
