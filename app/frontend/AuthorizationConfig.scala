@@ -21,7 +21,6 @@ trait AuthorizationConfig extends AuthConfig {
   override val idTag: ClassTag[Id] = scala.reflect.classTag[Id]
   override val sessionTimeoutInSeconds = tokenMaxAge
 
-
   lazy val intervals: mutable.LinkedHashMap[Interval, String] = loadStages(conf.getObjectList("stages"))
 
   override def resolveUser(id: Id)(implicit ctx: ExecutionContext): Future[Option[User]] = {
@@ -43,6 +42,7 @@ trait AuthorizationConfig extends AuthConfig {
       if( k contains new DateTime(System.currentTimeMillis()).withZone(frontend.EST) )
     } yield v).headOption
     stage.fold(Future.successful(play.api.mvc.Results.Forbidden("Current stage isn't found"))) { st =>
+      println(s"logoutSucceeded $st")
       Future.successful(play.api.mvc.Results.Redirect(routes.Aggregator.index(st)))
     }
   }
@@ -50,13 +50,16 @@ trait AuthorizationConfig extends AuthConfig {
   /**
     * Where to redirect the user after logging out
     */
-  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
+  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
+    println("logoutSucceeded")
     Future.successful(Redirect(routes.SportCenter.login(false)))
+  }
 
   /**
     * If the user is not logged in and tries to access a protected resource then redirect them as follows:
     */
   def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
+    println("authorizationFailed")
     Future.successful(Redirect(routes.SportCenter.login(true)))
   }
 
@@ -65,6 +68,7 @@ trait AuthorizationConfig extends AuthConfig {
     */
   override def authorizationFailed(request: RequestHeader, user: User, authority: Option[Authority])
                                   (implicit context: ExecutionContext): Future[Result] = {
+    println(s"authorizationFailed:$user")
     Future.successful(play.api.mvc.Results.Forbidden(s"resource is forbidden for ${user.login}"))
   }
 
@@ -73,6 +77,7 @@ trait AuthorizationConfig extends AuthConfig {
     * You should alter this procedure to suit your application.
     */
   def authorize(user: User, authority: Authority)(implicit ctx: ExecutionContext): Future[Boolean] = Future.successful {
+    println(s"authorize:$user")
     (Permission.valueOf(user.permission), authority) match {
       case (Administrator, _)       => true
       case (RegularUser, _) => true
@@ -100,8 +105,8 @@ trait AuthorizationConfig extends AuthConfig {
       .verifying("Invalid login or password", result => result.isDefined)
   }.withGlobalError(errorMessage)
 
-  val loginUrl: String = conf.getString("url.login").get
+  def loginUrl: String = conf.getString("url.login").get
 
   //should be equal to backend Max-Age
-  val tokenMaxAge: Int = conf.getInt("http-session.max-age").get
+  def tokenMaxAge: Int = conf.getInt("http-session.max-age").get
 }
