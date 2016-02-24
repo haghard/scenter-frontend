@@ -21,12 +21,11 @@ object ReboundLeaders {
   import ReboundLeaders._
 
   override val key = "url.reb-leaders"
-
   override val log = akka.event.slf4j.Logger("reb-leaders")
 
   def gateway(stage: String, user: Account): Future[Seq[RebLeadersElement]] = {
     val rebLeadersUrl = getUrl(key, stage)
-    log.info(s"${user.login} -> $rebLeadersUrl")
+    log.info(s"${logPrefix(user)} -> $rebLeadersUrl")
     ws.url(rebLeadersUrl).withHeaders(authHeader -> user.token).get().flatMap { response =>
       response.status match {
         case OK => Future {
@@ -47,7 +46,7 @@ object ReboundLeaders {
 
   def fetch(stage: String, user: Account): Future[Result] = {
     val rebLeadersUrl = getUrl(key, stage)
-    log.info(s"${user.login} -> $rebLeadersUrl")
+    log.info(s"${logPrefix(user)} -> $rebLeadersUrl")
     ws.url(rebLeadersUrl).withHeaders(authHeader -> user.token).get().flatMap { response =>
       response.status match {
         case OK =>

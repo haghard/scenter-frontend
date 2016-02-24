@@ -24,7 +24,9 @@ trait GatewaySupport {
 
   def key: String
 
-  def getUrl(key: String, stage: String) = conf.getString(key).get + stage
+  def getUrl(key: String, stage: String) = s"${conf.getString(key).get}$stage"
+
+  def logPrefix(user: Account) = s"${user.id}:${user.login}:${user.permission}"
 
   def refreshGatewayToken[T](user: Account, stage: String, f: (String, Account) => Future[Seq[T]])
                             (implicit ex: ExecutionContext): Future[Seq[T]] = {

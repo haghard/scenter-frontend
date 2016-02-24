@@ -17,8 +17,8 @@ import scala.concurrent.Future
 "time": "2013-02-10"
 */
 
-case class DailyResult(arena: String, guestTeam: String, homeTeam: String, guestScore: String, homeScore:String,
-                       guestScoreLine:String, homeScoreLine:String, date: String)
+case class DailyResult(arena: String, guestTeam: String, homeTeam: String, guestScore: String,
+                       homeScore:String, guestScoreLine:String, homeScoreLine:String, date: String)
 
 @Singleton class DailyResults @Inject() (val conf: play.api.Configuration,
                               val ws: WSClient, val system: ActorSystem) extends Controller with AuthElement
@@ -30,7 +30,7 @@ case class DailyResult(arena: String, guestTeam: String, homeTeam: String, guest
 
   def gateway(stage: String, user: Account): Future[Seq[DailyResult]] = {
     val url = getUrl(key, stage)
-    log.info(s"${user.login} -> $url")
+    log.info(s"${logPrefix(user)} -> $url")
     ws.url(url).withHeaders(authHeader -> user.token).get().flatMap { response =>
       response.status match {
         case OK => Future {

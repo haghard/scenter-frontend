@@ -28,7 +28,7 @@ class PointsPerGameLeaders @Inject()(val conf: play.api.Configuration, val ws: W
 
   def gateway(stage: String, user: Account): Future[Seq[PtsLeadersElement]] = {
     val ptsLeadersUrl = getUrl(key, stage)
-    log.info(s"${user.login} -> $ptsLeadersUrl")
+    log.info(s"${logPrefix(user)} -> $ptsLeadersUrl")
     ws.url(ptsLeadersUrl).withHeaders(authHeader -> user.token).get().flatMap { response =>
       response.status match {
         case OK => Future {
@@ -47,7 +47,7 @@ class PointsPerGameLeaders @Inject()(val conf: play.api.Configuration, val ws: W
 
   def fetch(stage: String, user: Account): Future[Result] = {
     val ptsLeadersUrl = getUrl(key, stage)
-    log.info(s"${user.login} -> $ptsLeadersUrl")
+    log.info(s"${logPrefix(user)} -> $ptsLeadersUrl")
     ws.url(ptsLeadersUrl).withHeaders(authHeader -> user.token).get().flatMap { response =>
       response.status match {
         case OK =>
