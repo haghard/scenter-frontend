@@ -1,7 +1,7 @@
 package frontend
 
-import akka.stream.{FlowShape, Attributes}
 import akka.stream.scaladsl._
+import akka.stream.{FlowShape, Attributes}
 import scala.concurrent.duration.{Duration, FiniteDuration}
 
 trait StreamSupport {

@@ -20,7 +20,6 @@ class Github @Inject()(val ws: WSClient, val conf: play.api.Configuration,
     conf.getString("github.consumer_secret").get)
 
   def callback() = Action.async { implicit req =>
-    import spray.json._
     import scalaz._
     import Scalaz._
 
@@ -41,8 +40,9 @@ class Github @Inject()(val ws: WSClient, val conf: play.api.Configuration,
           service.signRequest(accessToken, oAuthRequest)
           val twitterResponse = oAuthRequest.send()
           if (twitterResponse.getCode == 200) {
-            val body = twitterResponse.getBody.parseJson.asJsObject
-            body.getFields("name").head.toString().replace("\"", "")
+            //val body = twitterResponse.getBody.parseJson.asJsObject
+            //body.getFields("name").head.toString().replace("\"", "")
+            ""
           } else "unknown-auth-github"
         }.flatMap { login =>
           //TODO: handle github user correctly

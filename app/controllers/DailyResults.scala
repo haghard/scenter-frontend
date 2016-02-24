@@ -1,8 +1,6 @@
 package controllers
 
-
 import javax.inject.{Inject, Singleton}
-
 import akka.actor.ActorSystem
 import frontend.{Account, AuthorizationConfig}
 import jp.t2v.lab.play2.auth.AuthElement
@@ -46,8 +44,7 @@ case class DailyResult(arena: String, guestTeam: String, homeTeam: String, guest
             val homeFinalScore = homeT(1)
             val homeScoreLine = homeT(0)
             DailyResult(item.\("arena").as[String], s"$picPref${teams(0).trim}.gif", s"$picPref${teams(1).trim}.gif",
-              guestFinalScore, homeFinalScore, guestScoreLine, homeScoreLine,
-              item.\("time").as[String])
+              guestFinalScore, homeFinalScore, guestScoreLine, homeScoreLine, item.\("time").as[String])
           }
         }
         case FORBIDDEN => refreshGatewayToken[DailyResult](user, stage, gateway)
