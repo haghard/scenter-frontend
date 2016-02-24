@@ -1,12 +1,11 @@
 import play.api.Application
-import play.api.libs.ws.WS
 import play.api.libs.ws.ahc.{AhcConfigBuilder, AhcWSClient}
 import play.api.mvc.Results._
 import play.api.GlobalSettings
 import play.api.mvc.RequestHeader
 import frontend._
 import slick.driver.H2Driver.api._
-import scala.concurrent.{ExecutionContext, Await, Future}
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
 
 object Global extends GlobalSettings {

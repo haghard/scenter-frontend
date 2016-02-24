@@ -41,43 +41,37 @@ trait AuthorizationConfig extends AuthConfig {
       (k, v) ← intervals
       if( k contains new DateTime(System.currentTimeMillis()).withZone(frontend.EST) )
     } yield v).headOption
-    stage.fold(Future.successful(play.api.mvc.Results.Forbidden("Current stage isn't found"))) { st =>
-      println(s"logoutSucceeded $st")
-      Future.successful(play.api.mvc.Results.Redirect(routes.Aggregator.index(st)))
+    stage.fold(Future.successful(play.api.mvc.Results.Forbidden("Current stage isn't found"))) { stage =>
+      Future.successful(play.api.mvc.Results.Redirect(routes.Aggregator.index(stage)))
     }
   }
 
   /**
     * Where to redirect the user after logging out
     */
-  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
-    println("logoutSucceeded")
+  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
     Future.successful(Redirect(routes.SportCenter.login(false)))
-  }
+
 
   /**
     * If the user is not logged in and tries to access a protected resource then redirect them as follows:
     */
-  def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
-    println("authorizationFailed")
+  def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
     Future.successful(Redirect(routes.SportCenter.login(true)))
-  }
+
 
   /**
     * If authorization failed (usually incorrect password) redirect the user as follows:
     */
   override def authorizationFailed(request: RequestHeader, user: User, authority: Option[Authority])
-                                  (implicit context: ExecutionContext): Future[Result] = {
-    println(s"authorizationFailed:$user")
+                                  (implicit context: ExecutionContext): Future[Result] =
     Future.successful(play.api.mvc.Results.Forbidden(s"resource is forbidden for ${user.login}"))
-  }
 
   /**
     * A function that determines what `Authority` a user has.
     * You should alter this procedure to suit your application.
     */
   def authorize(user: User, authority: Authority)(implicit ctx: ExecutionContext): Future[Boolean] = Future.successful {
-    println(s"authorize:$user")
     (Permission.valueOf(user.permission), authority) match {
       case (Administrator, _)       => true
       case (RegularUser, _) => true
