@@ -1,11 +1,12 @@
-import java.io.File
-import com.esri.core.geometry.Point
 import com.typesafe.config.ConfigObject
 import play.api.mvc.{Result, Request, ActionBuilder}
 import scala.util.Try
 import scalaz.\/
 
 package object frontend {
+  import scala.collection.JavaConverters._
+  import com.github.nscala_time.time.Imports._
+  import scala.collection.mutable._
 
   val DefaultLogin = "haghard"
   val DefaultPassword = "suBai3sa"
@@ -16,31 +17,9 @@ package object frontend {
   //linked with Permission.TwitterUser
   val DefaultTwitterUser = "TwitterUser"
 
-  case class TweetInfo(searchQuery: String, message: String, author: String) {
-    def toJson = play.api.libs.json.Json.obj("message" -> s"$searchQuery : $message", "author" -> s"$author")
-  }
+  val EST = org.joda.time.DateTimeZone.forID("EST")
 
   type Histogram = Map[String, Long]
-
-  import spray.json._
-  import frontend.GeoJsonProtocol._
-
-  def load(file: File): IndexedSeq[Feature] = {
-    val src = scala.io.Source.fromFile(file)
-    val geo = src.mkString
-    src.close()
-    geo.parseJson.convertTo[Features].sortBy { f ⇒
-      val borough = f("boroughCode").convertTo[Int]
-      (borough, -f.geometry.area2D())
-    }
-  }
-
-  def borough(features: IndexedSeq[Feature], point: Point) =
-    features.find(_.geometry.contains(point)).map(_("borough").convertTo[String])
-
-  def updateHistogram(hist: Histogram, region: Option[String]) = {
-    region.fold(hist) { r ⇒ hist.updated(r, hist.getOrElse(r, 0l) + 1) }
-  }
 
   sealed trait Permission
   case object Administrator extends Permission
@@ -60,12 +39,6 @@ package object frontend {
       case v => throw new IllegalArgumentException(v)
     }
   }
-
-  import scala.collection.JavaConverters._
-  import com.github.nscala_time.time.Imports._
-  import scala.collection.mutable._
-
-  val EST = org.joda.time.DateTimeZone.forID("EST")
 
   def loadStages(conf: Option[java.util.List[_ <: ConfigObject]]) = {
     var views = scala.collection.mutable.LinkedHashMap[Interval, String]()

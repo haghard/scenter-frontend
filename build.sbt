@@ -5,11 +5,7 @@ import play.sbt.PlayScala
 //http://pedrorijo.com/blog/play-slick/
 //PlayMini.scala https://gist.github.com/xuwei-k/422365f271b12603d33c
 //https://engineering.sequra.es/2016/02/database-streaming-on-play-with-slick-from-publisher-to-chunked-result/
-
-
 //https://www.playframework.com/documentation/2.5.x/Highlights25
-
-
 //https://twitter.com/settings/widgets/700982122442579968/edit?notice=WIDGET_UPDATED
 
 name := "scenter-frontend"
@@ -35,12 +31,8 @@ libraryDependencies ++= Seq(
   jdbc,
   cache,
   ws,
-  "com.datastax.cassandra" %   "cassandra-driver-core"    %   CassandraDriverVersion withSources(),
-  "org.scalaz.stream"      %%  "scalaz-stream"            %   "0.8"                  withSources(),
-  "com.esri.geometry"      %   "esri-geometry-api"        %   "1.2.1",
-  "io.spray"               %%  "spray-json"               %   "1.3.2",
+  "org.scalaz.stream"      %%  "scalaz-stream"            %   "0.8",
   "jp.t2v"                 %%  "play2-auth"               %   "0.14.1",
-  "jp.t2v"                 %%  "play2-auth-social"        %   "0.14.1",
   "org.mindrot"            %   "jbcrypt"                  %   "0.3m",
   "com.h2database"         %   "h2"                       %   h2Version,
   "com.typesafe.slick"     %%  "slick"                    %   "3.1.1",
@@ -49,8 +41,6 @@ libraryDependencies ++= Seq(
   "com.github.scribejava"  %   "scribejava-core"         %    "2.2.0",
   "com.github.scribejava"  %   "scribejava-apis"         %    "2.2.0",
   specs2                   %   Test
-  //"org.webjars"       %   "jquery" % "2.1.3",
-  //"org.webjars"       %   "bootstrap" % "3.3.2",
 )
 
 resolvers += Resolver.mavenLocal
