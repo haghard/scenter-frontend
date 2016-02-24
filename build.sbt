@@ -16,8 +16,6 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, JavaAppPackaging
 
 scalaVersion := "2.11.7"
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
-val CassandraDriverVersion = "3.0.0"
-
 
 // Add a new template type for streaming templates
 TwirlKeys.templateFormats += ("stream" -> "ui.HtmlStreamFormat")
@@ -57,7 +55,6 @@ routesGenerator := InjectedRoutesGenerator
 // --------------------
 // build with activator docker:publishLocal
 
-dockerBaseImage := "frolvlad/alpine-oraclejdk8:latest"
 maintainer := "haghard"
 dockerExposedPorts in Docker := Seq(8081)
 dockerBaseImage := "frolvlad/alpine-oraclejdk8:latest"
