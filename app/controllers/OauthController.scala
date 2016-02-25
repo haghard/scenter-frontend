@@ -7,6 +7,8 @@ import play.api.http.HeaderNames._
 import play.api.libs.ws.WSClient
 import play.api.mvc._
 
+import scala.concurrent.Future
+
 @Singleton
 class OauthController @Inject()(val ws: WSClient, val conf: play.api.Configuration,
                                 val system: ActorSystem) extends Controller {
@@ -21,18 +23,19 @@ class OauthController @Inject()(val ws: WSClient, val conf: play.api.Configurati
     }.mkString("&")
   }.getOrElse("")
 
-  def index(provider: String) = Action {
+  def index(provider: String) = Action.async { implicit request =>
+    request.headers.add(FHeader -> inetAddress)
+
     provider match {
       case "twitter" =>
-        log.info("X-Forwarded-For: " + inetAddress)
-        Status(SEE_OTHER).withHeaders(
-            FHeader -> inetAddress,
-            LOCATION -> fullUrl(conf.getString("url.twitter-login").get, Map.empty))
+        log.info(s"$FHeader: $inetAddress")
+        Future { Redirect(conf.getString("url.twitter-login").get) }
 
-
-        //Redirect(conf.getString("url.twitter-login").get).withHeaders("X-Forwarded-For"-> inetAddress)
+       //Redirect(conf.getString("url.twitter-login").get).withHeaders("X-Forwarded-For"-> inetAddress)
       case "github" =>
-        Redirect(conf.getString("url.github-login").get).withHeaders("X-Forwarded-For"-> inetAddress)
+        Future {
+          Redirect(conf.getString("url.github-login").get).withHeaders("X-Forwarded-For" -> inetAddress)
+        }
     }
   }
 }
