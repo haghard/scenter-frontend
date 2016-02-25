@@ -23,19 +23,14 @@ class OauthController @Inject()(val ws: WSClient, val conf: play.api.Configurati
     }.mkString("&")
   }.getOrElse("")
 
-  def index(provider: String) = Action.async { implicit request =>
-    request.headers.add(FHeader -> inetAddress)
-
+  def index(provider: String) = Action { implicit request =>
+    //request.headers.add(FHeader -> inetAddress)
     provider match {
       case "twitter" =>
-        log.info(s"$FHeader: $inetAddress")
-        Future { Redirect(conf.getString("url.twitter-login").get) }
-
-       //Redirect(conf.getString("url.twitter-login").get).withHeaders("X-Forwarded-For"-> inetAddress)
-      case "github" =>
-        Future {
-          Redirect(conf.getString("url.github-login").get).withHeaders("X-Forwarded-For" -> inetAddress)
-        }
+        //log.info(s"$FHeader: $inetAddress")
+        //Future { Redirect(conf.getString("url.twitter-login").get) }
+        Redirect(conf.getString("url.twitter-login").get).withHeaders("X-Forwarded-For"-> inetAddress)
+      case "github" => Redirect(conf.getString("url.github-login").get).withHeaders("X-Forwarded-For" -> inetAddress)
     }
   }
 }
