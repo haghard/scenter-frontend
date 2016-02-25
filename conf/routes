@@ -7,7 +7,7 @@ GET    /                          controllers.SportCenter.login(loginError: Bool
 POST   /login                     controllers.SportCenter.authenticate
 
 
-GET    /login-oauth-cache         controllers.SportCenter.authenticateOauthThroughCache
+#GET    /login-oauth-cache         controllers.SportCenter.authenticateOauthThroughCache
 
 GET    /login-oauth2              controllers.SportCenter.authenticateOauth(login: String, password: String)
 
