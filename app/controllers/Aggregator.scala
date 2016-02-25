@@ -21,7 +21,7 @@ class Aggregator @Inject()(val conf: play.api.Configuration, val system: ActorSy
 
   def index(stage: String) = StackAction(AuthorityKey -> RegularUser) { implicit request =>
     val user = loggedIn(request)
-    log.info(s"${user.id}${user.login}:${user.permission} -> ${request.uri}")
+    log.info(s"${user.id}:${user.login}:${user.permission} -> ${request.uri}")
 
     val dailyStream = Pagelet.renderStream(daily.gateway("2016-02-10", user).map(views.html.daily.results(_)), DailyElementName)
     val rebStream = Pagelet.renderStream(rebound.gateway(stage, user).map(views.html.leaders.reb(_)), RebLeadElementName)
