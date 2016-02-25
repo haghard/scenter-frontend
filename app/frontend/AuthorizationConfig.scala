@@ -77,6 +77,7 @@ trait AuthorizationConfig extends AuthConfig {
     * You should alter this procedure to suit your application.
     */
   def authorize(user: User, authority: Authority)(implicit ctx: ExecutionContext): Future[Boolean] = Future.successful {
+    println(s"authorize: $user")
     (Permission.valueOf(user.permission), authority) match {
       case (Administrator, _)       => true
       case (RegularUser, _) => true

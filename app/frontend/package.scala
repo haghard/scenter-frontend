@@ -14,7 +14,6 @@ package object frontend {
 
   val DefaultTwitterPassword = "twitter-password"
 
-  //linked with Permission.TwitterUser
   val DefaultTwitterUser = "TwitterUser"
 
   val EST = org.joda.time.DateTimeZone.forID("EST")
