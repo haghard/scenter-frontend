@@ -8,6 +8,8 @@ import play.sbt.PlayScala
 //https://www.playframework.com/documentation/2.5.x/Highlights25
 //https://twitter.com/settings/widgets/700982122442579968/edit?notice=WIDGET_UPDATED
 
+//http://www.tzavellas.com/techblog/2015/02/10/action-composition-in-play-framework/
+
 name := "scenter-frontend"
 
 version := "0.0.1-SNAPSHOT"

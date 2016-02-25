@@ -16,7 +16,7 @@ import Scalaz._
 @Singleton
 class Twitter @Inject()(val ws: WSClient, val conf: play.api.Configuration,
                                    cache: CacheApi, val system: ActorSystem) extends Controller {
-  val log = akka.event.slf4j.Logger("oAuth-twitter")
+  val log = akka.event.slf4j.Logger("oauth-twitter")
   implicit val ex = system.dispatchers.lookup("akka.stream-dispatcher")
 
   val oauth = Oauth[com.github.scribejava.apis.TwitterApi].fromConfig(
@@ -37,8 +37,13 @@ class Twitter @Inject()(val ws: WSClient, val conf: play.api.Configuration,
           val accessToken = service.getAccessToken(token, verifier)
           val oAuthRequest = new com.github.scribejava.core.model.OAuthRequest(Verb.GET, oauth.protectedUrl, service)
           service.signRequest(accessToken, oAuthRequest)
-          val twitterResponse = oAuthRequest.send()
-          if (twitterResponse.getCode == 200) (Json.parse(twitterResponse.getBody) \ ("name")).as[String] else "unknown-auth-twitter"
+          //blocking
+          val twitterRes = oAuthRequest.send()
+
+          import scala.collection.JavaConverters._
+          log.info(s"HEADERS: ${twitterRes.getHeaders.asScala.mkString(", ")}")
+
+          if (twitterRes.getCode == 200) (Json.parse(twitterRes.getBody) \ ("name")).as[String] else "unknown-auth-twitter"
         }.flatMap { login =>
           log.info(s"Login from twitter: $login")
           AccountModel.insertOauthUser(login, frontend.DefaultTwitterPassword, frontend.DefaultTwitterUser).map { id =>

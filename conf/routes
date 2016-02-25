@@ -16,7 +16,7 @@ GET    /logout                    controllers.SportCenter.logout
 
 GET    /scenter                   controllers.Aggregator.index(stage: String)
 
-GET    /login-oauth/:provider     controllers.AuthController.index(provider: String)
+GET    /login-oauth/:provider     controllers.OauthController.index(provider: String)
 
 GET    /twitter-callback          controllers.Twitter.callback
 

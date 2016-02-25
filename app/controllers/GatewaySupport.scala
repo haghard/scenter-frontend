@@ -18,11 +18,11 @@ trait GatewaySupport {
   lazy val authHeader = conf.getString("http-session.auth").get
   lazy val backendAuthHeader = conf.getString("http-session.auth-backend").get
 
-  def log: org.slf4j.Logger
-
   implicit val ex = system.dispatchers.lookup("akka.stream-dispatcher")
 
   def key: String
+
+  def log: org.slf4j.Logger
 
   def getUrl(key: String, stage: String) = s"${conf.getString(key).get}$stage"
 

@@ -9,7 +9,6 @@ import play.api.mvc._
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
-//http://www.tzavellas.com/techblog/2015/02/10/action-composition-in-play-framework/
 @Singleton
 class SportCenter @Inject()(val conf: play.api.Configuration,
                                        cache: CacheApi, system: ActorSystem) extends Controller
@@ -55,6 +54,7 @@ class SportCenter @Inject()(val conf: play.api.Configuration,
     }
   }
 
+  /*
   def authenticateOauthThroughCache = Action.async { implicit request =>
     cache.get[String](frontend.DefaultTwitterUser).fold(Future.successful(BadRequest(views.html.login.login(authenticationErrorForm(s"Can't find oauth user in cache"))))) { fields =>
       val authParts = fields.split(",")
@@ -64,5 +64,5 @@ class SportCenter @Inject()(val conf: play.api.Configuration,
         }
       }
     }
-  }
+  }*/
 }

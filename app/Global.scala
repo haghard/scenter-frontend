@@ -1,3 +1,5 @@
+import java.net.{NetworkInterface, InetAddress}
+
 import play.api.Application
 import play.api.libs.ws.ahc.{AhcConfigBuilder, AhcWSClient}
 import play.api.mvc.Results._
@@ -7,6 +9,7 @@ import frontend._
 import slick.driver.H2Driver.api._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
+import scala.collection.JavaConverters._
 
 object Global extends GlobalSettings {
   implicit val timeout = 5 seconds
@@ -15,10 +18,29 @@ object Global extends GlobalSettings {
   val AuthHeader = "Set-Authorization"
   val logger = akka.event.slf4j.Logger("global")
 
+  val ipExpression = """\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}"""
+
+  def addresses(ethName: String): Option[InetAddress] =
+    NetworkInterface.getNetworkInterfaces.asScala.toList
+      .find(_.getName == ethName)
+      .flatMap(x ⇒ x.getInetAddresses.asScala.toList.find(i ⇒ i.getHostAddress.matches(ipExpression)))
+
   override def onStart(app: Application) {
-    logger.info("*********************************Application is started******************************************")
+    val extIp = app.configuration.getString("http.ip").fold(throw new Exception(s"DOMAIN env variable should be passed"))(identity)
+    val localAddress = addresses("eth0").map(_.getHostAddress).getOrElse("0.0.0.0")
+
+    //$environment
+    val message = new StringBuilder().append('\n')
+      .append("=====================================================================================================================================")
+      .append("\n")
+      .append(s"★ ★ ★ ★ ★ ★ Frontend env:  [ext: $extIp - docker: $localAddress] ★ ★ ★ ★ ★ ★")
+      .append("\n")
+      .append("=====================================================================================================================================")
+
+    logger.info(message.toString())
+
     implicit val ec = app.actorSystem.dispatchers.lookup("akka.blocking-dispatcher")
-    AccountModel.readCount.fold(createSchema(app)) { count => logger.info(s"Found registered users:$count") }
+    AccountModel.readCount.fold(createSchema(app)) { count => logger.info(s"Registered users are founded:$count") }
   }
 
   def createSchema(app: Application)(implicit ec: ExecutionContext) = {
@@ -43,7 +65,7 @@ object Global extends GlobalSettings {
   }
 
   override def onStop(app: Application): Unit = {
-    logger.info("*********************************Application is stopped******************************************")
+    logger.info("★ ★ ★ ★ ★ ★ Application is stopped ★ ★ ★ ★ ★ ★")
     DB.connection.close()
   }
 

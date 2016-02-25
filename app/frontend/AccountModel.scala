@@ -38,13 +38,12 @@ object AccountModel {
     }
   }
 
-  def insertOauthUser(login: String, password: String, permission: String)(implicit ex: ExecutionContext): Future[Long] = {
+  def insertOauthUser(login: String, password: String, permission: String)(implicit ex: ExecutionContext): Future[Long] =
     for {
       count <- DB.connection.run(countQuery).map(_.head) //auto inc on db level maybe
       result <- DB.connection.run(AccountModel.accounts += Account(count + 1,
         login, org.mindrot.jbcrypt.BCrypt.hashpw(password, salt), permission, frontend.DefaultToken))
     } yield (count+1)
-  }
 
   def updateToken(login: String, password: String, token: String): Future[Int] =
     DB.connection.run(refreshTokenQuery(login, password, token))
