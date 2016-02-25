@@ -1,9 +1,8 @@
 import java.net.{NetworkInterface, InetAddress}
 
-import play.api.Application
+import play.api.{Play, Application, GlobalSettings}
 import play.api.libs.ws.ahc.{AhcConfigBuilder, AhcWSClient}
 import play.api.mvc.Results._
-import play.api.GlobalSettings
 import play.api.mvc.RequestHeader
 import frontend._
 import slick.driver.H2Driver.api._
@@ -29,11 +28,10 @@ object Global extends GlobalSettings {
     val extIp = app.configuration.getString("http.ip").fold(throw new Exception(s"DOMAIN env variable should be passed"))(identity)
     val localAddress = addresses("eth0").map(_.getHostAddress).getOrElse("0.0.0.0")
 
-    //$environment
     val message = new StringBuilder().append('\n')
       .append("=====================================================================================================================================")
       .append("\n")
-      .append(s"★ ★ ★ ★ ★ ★ Frontend env:  [ext: $extIp - docker: $localAddress] ★ ★ ★ ★ ★ ★")
+      .append(s"★ ★ ★ ★ ★ ★ Frontend env:${Play.mode(app)} network:[ext: $extIp - docker: $localAddress] ★ ★ ★ ★ ★ ★")
       .append("\n")
       .append("=====================================================================================================================================")
 

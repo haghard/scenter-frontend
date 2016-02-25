@@ -47,6 +47,9 @@ class Twitter @Inject()(val ws: WSClient, val conf: play.api.Configuration,
         }.flatMap { login =>
           log.info(s"Login from twitter: $login")
           AccountModel.insertOauthUser(login, frontend.DefaultTwitterPassword, frontend.DefaultTwitterUser).map { id =>
+
+            //ws.url(url).post(Map("login" -> Seq($login"), "password" -> Seq(frontend.DefaultTwitterPassword)))
+
             //http://stackoverflow.com/questions/13068523/playframework-how-to-redirect-to-a-post-call-inside-controller-action-method
             /*
             more secured way with cache
