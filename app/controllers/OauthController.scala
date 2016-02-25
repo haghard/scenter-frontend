@@ -17,7 +17,7 @@ class OauthController @Inject()(val ws: WSClient, val conf: play.api.Configurati
   def index(provider: String) = Action {
     provider match {
       case "twitter" => Redirect(conf.getString("url.twitter-login").get)
-      case "github" => Redirect(conf.getString("url.github-login").get).withHeaders("X-Forwarded-For" -> inetAddress)
+      case "github" => Redirect(conf.getString("url.github-login").get)
     }
   }
 }
