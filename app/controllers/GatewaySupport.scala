@@ -30,6 +30,7 @@ trait GatewaySupport {
 
   def refreshGatewayToken[T](user: Account, stage: String, f: (String, Account) => Future[Seq[T]])
                             (implicit ex: ExecutionContext): Future[Seq[T]] = {
+    system.log.info(s"refresh-token for ${user.id}")
     AccountModel.refreshToken(loginUrl, user, backendAuthHeader, ws).flatMap { tokenCtx =>
       tokenCtx.fold(Future.failed[Seq[T]](new Exception("Refresh-token action has failed"))) { account =>
         AccountModel.updateToken(user.login, user.password, account.token)
@@ -40,6 +41,7 @@ trait GatewaySupport {
 
   def refreshToken(user: Account, url: String, f: (String, Account) => Future[Result])
                   (implicit ex: ExecutionContext): Future[Result] = {
+    system.log.info(s"refresh-token for ${user.id}")
     AccountModel.refreshToken(loginUrl, user, backendAuthHeader, ws).flatMap { tokenCtx =>
       tokenCtx.fold(Future.failed[Result](new Exception("Refresh-token action has failed"))) { account =>
         AccountModel.updateToken(user.login, user.password, account.token)

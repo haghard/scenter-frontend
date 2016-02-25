@@ -37,10 +37,12 @@ class SportCenter @Inject()(val conf: play.api.Configuration,
   }
 
   def authenticate = Action.async { implicit request =>
+    log.info("authenticate")
     loginForm.bindFromRequest.fold(
       { formWithErrors =>
         Future.successful(BadRequest(views.html.login.login(authenticationErrorForm("Login or password is missing"))))
       }, { user =>
+        log.info(s"authenticate with: $user")
         gotoLoginSucceeded(s"${user.get.id},${user.get.login},${user.get.password},${user.get.permission},${user.get.token}")
       }
     )

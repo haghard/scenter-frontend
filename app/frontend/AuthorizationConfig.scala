@@ -42,6 +42,7 @@ trait AuthorizationConfig extends AuthConfig {
       if( k contains new DateTime(System.currentTimeMillis()).withZone(frontend.EST) )
     } yield v).headOption
     stage.fold(Future.successful(play.api.mvc.Results.Forbidden("Current stage isn't found"))) { stage =>
+      println(s"authenticate with: $stage")
       Future.successful(play.api.mvc.Results.Redirect(routes.Aggregator.index(stage)))
     }
   }
@@ -50,6 +51,7 @@ trait AuthorizationConfig extends AuthConfig {
     * Where to redirect the user after logging out
     */
   def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
+    println("logoutSucceeded")
     Future.successful(Redirect(routes.SportCenter.login(false)))
   }
 
@@ -57,8 +59,10 @@ trait AuthorizationConfig extends AuthConfig {
   /**
     * If the user is not logged in and tries to access a protected resource then redirect them as follows:
     */
-  def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
+  def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
+    println("authenticationFailed")
     Future.successful(Redirect(routes.SportCenter.login(true)))
+  }
 
 
   /**
