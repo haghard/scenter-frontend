@@ -44,7 +44,6 @@ object Global extends GlobalSettings {
   def createSchema(app: Application)(implicit ec: ExecutionContext) = {
     val haghard = Account(0, DefaultLogin, org.mindrot.jbcrypt.BCrypt.hashpw(DefaultPassword, AccountModel.salt), "RegularUser", DefaultToken)
     val loginUrl = app.configuration.getString("url.login").get
-
     val client = new AhcWSClient(new AhcConfigBuilder().build())(app.materializer)
 
     val insertFlow = AccountModel.refreshToken(loginUrl, haghard, AuthHeader, client).flatMap { haghard =>

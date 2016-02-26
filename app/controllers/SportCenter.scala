@@ -11,7 +11,7 @@ import scala.concurrent.Future
 
 @Singleton
 class SportCenter @Inject()(val conf: play.api.Configuration,
-                                       cache: CacheApi, system: ActorSystem) extends Controller
+                            cache: CacheApi, system: ActorSystem) extends Controller
   with jp.t2v.lab.play2.auth.LoginLogout with AuthorizationConfig {
 
   val log: org.slf4j.Logger = akka.event.slf4j.Logger("sport-center")
@@ -37,7 +37,6 @@ class SportCenter @Inject()(val conf: play.api.Configuration,
   }
 
   def authenticate = Action.async { implicit request =>
-    log.info("authenticate")
     loginForm.bindFromRequest.fold(
       { formWithErrors =>
         Future.successful(BadRequest(views.html.login.login(authenticationErrorForm("Login or password is missing"))))

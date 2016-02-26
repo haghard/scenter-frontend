@@ -22,7 +22,7 @@ case class DailyResult(arena: String, guestTeam: String, homeTeam: String, guest
 
 @Singleton
 class DailyResults @Inject() (val conf: play.api.Configuration, val ws: WSClient,
-                                         val system: ActorSystem) extends Controller
+                              val system: ActorSystem) extends Controller
   with AuthElement with AuthorizationConfig with GatewaySupport {
 
   override val key = "url.daily-results"

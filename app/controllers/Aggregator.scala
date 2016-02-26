@@ -1,5 +1,6 @@
 package controllers
 
+import org.joda.time.DateTime
 import play.api.mvc._
 import ui.{HtmlStream, Pagelet}
 import akka.actor.ActorSystem
@@ -21,9 +22,13 @@ class Aggregator @Inject()(val conf: play.api.Configuration, val system: ActorSy
 
   def index(stage: String) = StackAction(AuthorityKey -> RegularUser) { implicit request =>
     val user = loggedIn(request)
+
+    val now = new DateTime(System.currentTimeMillis()).withZone(frontend.EST)
+    val nowDay = s"${now.getYear}-${now.getMonthOfYear}-${now.getDayOfMonth}"
+
     log.info(s"${user.id}:${user.login}:${user.permission} -> ${request.uri}")
 
-    val dailyStream = Pagelet.renderStream(daily.gateway("2016-02-10", user).map(views.html.daily.results(_)), DailyElementName)
+    val dailyStream = Pagelet.renderStream(daily.gateway(nowDay, user).map(views.html.daily.results(_)), DailyElementName)
     val rebStream = Pagelet.renderStream(rebound.gateway(stage, user).map(views.html.leaders.reb(_)), RebLeadElementName)
     val prsStream = Pagelet.renderStream(pts.gateway(stage, user).map(views.html.leaders.pts(_)), PtsLeadElementName)
 

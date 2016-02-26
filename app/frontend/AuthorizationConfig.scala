@@ -42,7 +42,6 @@ trait AuthorizationConfig extends AuthConfig {
       if( k contains new DateTime(System.currentTimeMillis()).withZone(frontend.EST) )
     } yield v).headOption
     stage.fold(Future.successful(play.api.mvc.Results.Forbidden("Current stage isn't found"))) { stage =>
-      println(s"authenticate with: $stage")
       Future.successful(play.api.mvc.Results.Redirect(routes.Aggregator.index(stage)))
     }
   }
@@ -51,8 +50,7 @@ trait AuthorizationConfig extends AuthConfig {
     * Where to redirect the user after logging out
     */
   def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
-    println("logoutSucceeded")
-    Future.successful(Redirect(routes.SportCenter.login(false)))
+    Future.successful(Redirect(routes.SportCenter.login(loginError = false)))
   }
 
 
@@ -60,8 +58,7 @@ trait AuthorizationConfig extends AuthConfig {
     * If the user is not logged in and tries to access a protected resource then redirect them as follows:
     */
   def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
-    println("authenticationFailed")
-    Future.successful(Redirect(routes.SportCenter.login(true)))
+    Future.successful(Redirect(routes.SportCenter.login(loginError = true)))
   }
 
 
@@ -77,7 +74,6 @@ trait AuthorizationConfig extends AuthConfig {
     * You should alter this procedure to suit your application.
     */
   def authorize(user: User, authority: Authority)(implicit ctx: ExecutionContext): Future[Boolean] = Future.successful {
-    println(s"authorize: $user")
     (Permission.valueOf(user.permission), authority) match {
       case (Administrator, _)       => true
       case (RegularUser, _) => true
@@ -106,8 +102,8 @@ trait AuthorizationConfig extends AuthConfig {
       .verifying("Invalid login or password", result => result.isDefined)
   }.withGlobalError(errorMessage)
 
-  def loginUrl: String = conf.getString("url.login").get
+  def loginUrl = conf.getString("url.login").get
 
   //should be equal to backend Max-Age
-  def tokenMaxAge: Int = conf.getInt("http-session.max-age").get
+  def tokenMaxAge = conf.getInt("http-session.max-age").get
 }

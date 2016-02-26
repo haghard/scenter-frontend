@@ -35,11 +35,8 @@ object ReboundLeaders {
               s"def/off/total: ${item.\("defensive").as[Double]}/${item.\("offensive").as[Double]}/${item.\("total").as[Double]}")
           }
         }
-        case FORBIDDEN =>
-          log.info("reb-leaders: refresh-token")
-          refreshGatewayToken[RebLeadersElement](user, stage, gateway)
-        case badStatus =>
-          Future.successful(Seq.empty)
+        case FORBIDDEN => refreshGatewayToken[RebLeadersElement](user, stage, gateway)
+        case badStatus => Future.successful(Seq.empty)
       }
     }
   }

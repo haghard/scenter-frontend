@@ -37,9 +37,7 @@ class PointsPerGameLeaders @Inject()(val conf: play.api.Configuration, val ws: W
               item.\("team").as[String], s"$picPref${item.\("team").as[String]}.gif", item.\("pts").as[Double])
           }
         }
-        case FORBIDDEN =>
-          log.info("pts-leaders: refresh-token")
-          refreshGatewayToken[PtsLeadersElement](user, stage, gateway)
+        case FORBIDDEN => refreshGatewayToken[PtsLeadersElement](user, stage, gateway)
         case badCode => Future.successful(Seq.empty)
       }
     }
