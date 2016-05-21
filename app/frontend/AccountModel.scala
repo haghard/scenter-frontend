@@ -24,11 +24,11 @@ object AccountModel {
     sql"UPDATE ACCOUNTS SET TOKEN = $token WHERE LOGIN = $login AND PASSWORD = $password".asUpdate
 
   def readCount(implicit ex: ExecutionContext, duration: Duration) =
-    Await.result(DB.connection.run(countQuery).map(_.headOption).recover { case ex: Exception => None }, duration)
+    Await.result(DB.connection.run(countQuery).map(_.headOption), duration)
 
-  def authenticateSync(login: String, password: String)(implicit ex: ExecutionContext, duration: Duration): Option[Account] = {
+  def authenticateSync(login: String, password: String)
+                      (implicit ex: ExecutionContext, duration: Duration): Option[Account] =
     Await.result(authenticate(login, password), duration)
-  }
 
   def authenticate(login: String, password: String)(implicit ex: ExecutionContext): Future[Option[Account]] = {
     val searchAction = accountQuery(login)
